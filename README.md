@@ -1,57 +1,83 @@
 # 🚀 End-to-End CI/CD Pipeline with Jenkins, Docker & Kubernetes
 
-A hands-on DevOps project demonstrating an end-to-end CI/CD workflow using GitHub, Jenkins, Maven, Docker, Docker Hub and Kubernetes.
+A hands-on DevOps project demonstrating an end-to-end CI/CD workflow from source code in GitHub to a containerized Spring Boot application deployed on Kubernetes.
 
-## 🏗️ Architecture
+This project was built using AWS EC2, Jenkins, Git, GitHub, Maven, Docker, Docker Hub, Kubernetes and Minikube.
 
-GitHub
-↓
-Jenkins
-↓
-Maven Build
-↓
-Docker Build
-↓
-Docker Hub
-↓
-Kubernetes / Minikube
-↓
-Spring Boot Application
+---
 
-## 🛠️ Technologies Used
+# 📌 Project Overview
 
-- AWS EC2
-- Linux
-- Git & GitHub
-- Jenkins
-- Maven
-- Java 21
-- Spring Boot
-- Docker
-- Docker Hub
-- Kubernetes
-- Minikube
+The objective of this project was to understand how a DevOps pipeline works from source code to application deployment.
 
-## 🔄 CI/CD Workflow
+The application starts as Java source code stored in GitHub.
 
-### 1. Source Code
+Jenkins checks out the source code and builds the application using Maven.
 
-The application source code is maintained in GitHub.
+The generated Spring Boot JAR is then packaged into a Docker image.
 
-### 2. Jenkins
+Jenkins authenticates securely with Docker Hub and pushes the image.
 
-Jenkins automatically checks out the source code and executes the CI/CD pipeline.
+The Docker image is then deployed to a Kubernetes cluster running on a separate AWS EC2 instance using Minikube.
 
-Pipeline stages:
+Kubernetes runs two replicas of the application and exposes them through a NodePort Service.
 
-- Checkout
-- Maven Build
-- Docker Build
-- Docker Hub Push
+Finally, the application is accessed through a browser.
 
-### 3. Maven Build
+---
 
-Jenkins builds the Spring Boot application using Maven.
+# 🏗️ Final Architecture
 
-```bash
-mvn clean package
+```text
+                         ┌──────────────────┐
+                         │      GitHub      │
+                         │  Source Code     │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │     Jenkins      │
+                         │      CI/CD       │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │      Maven       │
+                         │   Build JAR      │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │      Docker      │
+                         │  Build Image     │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │    Docker Hub    │
+                         │ Store Image      │
+                         └────────┬─────────┘
+                                  │
+                                  │ docker pull
+                                  ▼
+                  ┌──────────────────────────────┐
+                  │    AWS EC2 - Kubernetes     │
+                  │                              │
+                  │       Minikube Cluster      │
+                  │                              │
+                  │   ┌──────────┐ ┌──────────┐ │
+                  │   │   Pod 1   │ │   Pod 2   │ │
+                  │   │  Running  │ │  Running  │ │
+                  │   └────┬─────┘ └────┬─────┘ │
+                  │        │              │       │
+                  │        └──────┬───────┘       │
+                  │               ▼               │
+                  │       Kubernetes Service      │
+                  │            NodePort           │
+                  └──────────────┬───────────────┘
+                                 │
+                                 ▼
+                         ┌──────────────────┐
+                         │  Spring Boot     │
+                         │   Application    │
+                         └──────────────────┘
